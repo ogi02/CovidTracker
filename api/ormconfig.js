@@ -6,5 +6,7 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
     synchronize: process.env.DB_SYNCHRONIZE === 'true',
-    entities: ['src/Entity/*.js'],
+    autoSchemaSync: process.env.DB_AUTOSCHEMASYNC === 'true',
+    schema: 'public',
+    entities: ["./src/Entity/*.js"]
 };
