@@ -1,17 +1,17 @@
 class Meeting {
-
-	constructor(device_id1, device_id2) {
-		this._device_id1 = device_id1;
-		this._device_id2 = device_id2;
-		this._timestamp = new Date()
+	
+	constructor(device_name1, device_name2) {
+		this._device_name1 = device_name1;
+		this._device_name2 = device_name2;
+		this._timestamp = new Date();
 	}
 
-	get device_id1() {
-		return this._device_id1;
+	get device_name1() {
+		return this._device_name1;
 	}
 
-	get device_id2() {
-		return this._device_id2;
+	get device_name2() {
+		return this._device_name2;
 	}
 
 	get timestamp() {
