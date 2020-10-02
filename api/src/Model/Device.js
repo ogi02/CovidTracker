@@ -1,23 +1,23 @@
 class Device {
 	
 	constructor(name) {
-		this._name = name;
+		this.name = name;
 	}
 
-	get name() {
-		return this._name;
-	}
+	// get name() {
+	// 	return this._name;
+	// }
 
-	get isSick() {
-		return this._isInfected;
-	}
+	// get isSick() {
+	// 	return this._isInfected;
+	// }
 
 	sick() {
-		this._isInfected = 1;
+		this.isInfected = 1;
 	}
 
 	recover() {
-		this._isInfected = 0;
+		this.isInfected = 0;
 	}
 
 }
