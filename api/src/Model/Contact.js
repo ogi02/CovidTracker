@@ -1,4 +1,4 @@
-class Meeting {
+class Contact {
 	
 	constructor(device_name1, device_name2) {
 		this._device_name1 = device_name1;
@@ -21,5 +21,5 @@ class Meeting {
 }
 
 module.exports = {
-	Meeting: Meeting
+	Contact: Contact
 }
