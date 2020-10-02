@@ -127,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
         registerDevice();
         searchForNearbyDevices();
 
+        startService(new Intent(getBaseContext(), isContactedService.class));
+
         Button reportInfectednessButton = findViewById(R.id.alertButton);
         reportInfectednessButton.setOnClickListener(view -> reportInfectedness());
 
