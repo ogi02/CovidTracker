@@ -14,8 +14,12 @@ module.exports = new EntitySchema({
             type: 'varchar'
         },
         isInfected: {
+<<<<<<< HEAD
+            type: 'int'
+=======
             type: 'int',
             default: 0
+>>>>>>> 64875695a0d9f626685d8713e94ee67c28e09ee0
         }
     },
 });

@@ -1,5 +1,10 @@
 const { createConnection } = require('typeorm');
 
+<<<<<<< HEAD
+createConnection().then(function () {
+    const d = require('./Routes/Report');
+    console.log(d.report())
+=======
 createConnection().then(() => {
 
 	const express = require('express');
@@ -18,4 +23,5 @@ createConnection().then(() => {
 
 	registerDevice.register("d1", "sth");
 
+>>>>>>> 64875695a0d9f626685d8713e94ee67c28e09ee0
 }).catch(err => console.log(err));
