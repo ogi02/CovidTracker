@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ogi02/CovidTracker#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "typeorm": "^0.2.28"
   }
 }
