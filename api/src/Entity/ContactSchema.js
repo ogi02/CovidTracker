@@ -17,11 +17,13 @@ module.exports = new EntitySchema({
     relations: {
         device1: {
             target: 'Device',
-            type: 'many-to-one'
+            type: 'many-to-one',
+            eager: true
         },
         device2: {
             target: 'Device',
-            type: 'many-to-one'
+            type: 'many-to-one',
+            eager: true
         }
     }
 })
