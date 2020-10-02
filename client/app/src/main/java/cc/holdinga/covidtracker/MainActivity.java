@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        registerDevice();
         searchForNearbyDevices();
 
         Button reportInfectednessButton = findViewById(R.id.alertButton);
@@ -117,12 +118,12 @@ public class MainActivity extends AppCompatActivity {
                 .url("https://api.mocki.io/v1/993b1ec5")
                 .post(buildDevicePropertiesRequestBody())
                 .build();
-        httpClient.newCall(request).enqueue(new EmptyResponseHandler());
+        httpClient.newCall(request).enqueue(noActionResponseHandler);
     }
 
     private RequestBody buildDevicePropertiesRequestBody(){
         return new FormBody.Builder()
-                .add("name", deviceName)
+                .add("name", currentDeviceName)
                 .build();
     }
 
@@ -140,15 +141,5 @@ public class MainActivity extends AppCompatActivity {
                 .post(buildDevicePropertiesRequestBody())
                 .build();
         httpClient.newCall(request).enqueue(noActionResponseHandler);
-    }
-
-    private Request buildReportInfectednessRequest() {
-        RequestBody requestBody = new FormBody.Builder()
-                .add("deviceName", currentDeviceName)
-                .build();
-        return new Request.Builder()
-                .url("https://api.mocki.io/v1/993b1ec5")
-                .post(requestBody)
-                .build();
     }
 }
