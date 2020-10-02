@@ -11,10 +11,12 @@ createConnection().then(() => {
 	const report = require('./Routes/Report');
 	const checkForContact = require('./Routes/CheckForContact');
 
+	app.use('/', express.json());
+
 	app.use('/', (req, res, next) => {
-		console.log(req);
+		console.log(req.body);
 		next();
-	})
+	});
 
 	app.post('/registerDevice', registerDevice.register);
 	app.post('/reportContact', contact.contact);
