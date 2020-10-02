@@ -1,8 +1,8 @@
 class Contact {
 	
-	constructor(device_name1, device_name2) {
-		this.device_name1 = device_name1;
-		this.device_name2 = device_name2;
+	constructor(deviceName1, deviceName2) {
+		this.deviceName1 = deviceName1;
+		this.deviceName2 = deviceName2;
 		this.timestamp = new Date();
 	}
 
