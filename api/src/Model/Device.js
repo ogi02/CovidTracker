@@ -2,7 +2,6 @@ class Device {
 	
 	constructor(name) {
 		this._name = name;
-		this._isInfected = false;
 	}
 
 	get name() {
@@ -14,11 +13,11 @@ class Device {
 	}
 
 	sick() {
-		this._isInfected = true;
+		this._isInfected = 1;
 	}
 
 	recover() {
-		this._isInfected = false;
+		this._isInfected = 0;
 	}
 
 }
