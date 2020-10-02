@@ -17,8 +17,8 @@ createConnection().then(() => {
 	app.get('/checkForContact', checkForContact.checkForContact);
 
     // registerDevice.register("d1", "sth");
-    report.report("sami");
-    checkForContact.checkForContact("");
+    // report.report("sami");
+    checkForContact.checkForContact("sami");
 
 
 }).catch(err => console.log(err));
