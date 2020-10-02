@@ -11,39 +11,80 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.widget.Button;
+import cc.holdinga.covidtracker.models.Contact;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String deviceName = getDeviceName();
-
-    private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private final String currentDeviceName = getCurrentDeviceName();
+    private final Map<String, Contact> contacts = new HashMap<>();
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Discovery has found a device. Get the BluetoothDevice
-                // object and its info from the Intent.
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); // MAC address
-                System.out.println(deviceName + deviceHardwareAddress);
+                BluetoothDevice contactedDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                addContact(contactedDevice.getName());
             }
             if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                mBluetoothAdapter.startDiscovery();
+                bluetoothAdapter.startDiscovery();
             }
         }
     };
+    private final Callback noActionResponseHandler = new Callback() {
+        @Override
+        public void onFailure(@NonNull Call call, @NonNull IOException e) {
 
-    private String getDeviceName() {
-        if (mBluetoothAdapter == null) {
+        }
+
+        @Override
+        public void onResponse(@NonNull Call call, @NonNull Response response) {
+
+        }
+    };
+
+    private String getCurrentDeviceName() {
+        if (bluetoothAdapter == null) {
             return null;
         }
-        return mBluetoothAdapter.getName();
+        return bluetoothAdapter.getName();
+    }
+
+    private void addContact(String contactDevice) {
+        if (contacts.containsKey(contactDevice)) {
+            if (isContactForReport(contacts.get(contactDevice))) {
+                contacts.remove(contactDevice);
+                reportContact(contactDevice);
+            }
+            return;
+        }
+        if (isCurrentDeviceObligatedToReportForContact(contactDevice)) {
+            contacts.put(contactDevice, new Contact(contactDevice, LocalDateTime.now()));
+        }
+    }
+
+    private boolean isContactForReport(Contact contact) {
+        if (contact == null) {
+            return false;
+        }
+        long minutesAfterFirstContact = Duration.between(LocalDateTime.now(), contact.getContactTime()).toMillis();
+        return Math.abs(minutesAfterFirstContact) >= 10000;
+    }
+
+    private void reportContact(String contactDevice) {
+
+    }
+
+    private boolean isCurrentDeviceObligatedToReportForContact(String detectedDevice) {
+        return detectedDevice != null && detectedDevice.compareTo(currentDeviceName) < 0;
     }
 
     @Override
@@ -63,34 +104,22 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(receiver, filter);
-        mBluetoothAdapter.startDiscovery();
+        bluetoothAdapter.startDiscovery();
     }
 
     private void reportInfectedness() {
         OkHttpClient httpClient = new OkHttpClient();
         Request request = buildReportInfectednessRequest();
-        httpClient.newCall(request).enqueue(new ReportInfectednessResponseHandler());
+        httpClient.newCall(request).enqueue(noActionResponseHandler);
     }
 
     private Request buildReportInfectednessRequest() {
         RequestBody requestBody = new FormBody.Builder()
-                .add("deviceName", deviceName)
+                .add("deviceName", currentDeviceName)
                 .build();
         return new Request.Builder()
                 .url("https://api.mocki.io/v1/993b1ec5")
                 .post(requestBody)
                 .build();
-    }
-
-    private static class ReportInfectednessResponseHandler implements Callback {
-        @Override
-        public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
-        }
-
-        @Override
-        public void onResponse(@NonNull Call call, @NonNull Response response) {
-
-        }
     }
 }
