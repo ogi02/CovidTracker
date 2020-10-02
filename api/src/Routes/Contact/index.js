@@ -18,6 +18,8 @@ const contact = async (req, res) => {
 		timestamp: c.timestamp
 	});
 
+	res.sendStatus(201);
+
 }
 
 exports.contact = contact

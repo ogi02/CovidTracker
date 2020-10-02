@@ -14,6 +14,11 @@ const register = async (req, res) => {
 			name: d.name,
 			isInfected: d.isInfected
 		});
+
+		res.sendStatus(201);
+	}
+	else {
+		res.sendStatus(204);
 	}
 
 }
