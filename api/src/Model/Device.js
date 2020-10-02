@@ -1,4 +1,4 @@
-export class Device {
+class Device {
 
 	constructor(name) {
 		this._name = name;
@@ -21,4 +21,8 @@ export class Device {
 		this._isSick = false;
 	}
 
+}
+
+module.exports = {
+	Device: Device
 }
