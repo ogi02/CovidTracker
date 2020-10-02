@@ -1,9 +1,9 @@
 const EntitySchema = require('typeorm').EntitySchema;
-const Meeting = require('../Model/Meeting').Meeting;
+const Contact = require('../Model/Contact').Contact;
 
 module.exports = new EntitySchema({
-    name: 'Meeting',
-    target: Meeting,
+    name: 'Contact',
+    target: Contact,
     columns: {
         id: {
             primary: true,
