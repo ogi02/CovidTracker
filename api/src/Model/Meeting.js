@@ -1,4 +1,4 @@
-export class Meeting {
+class Meeting {
 
 	constructor(device_id1, device_id2) {
 		this._device_id1 = device_id1;
@@ -18,4 +18,8 @@ export class Meeting {
 		return this._timestamp;
 	}
 
+}
+
+module.exports = {
+	Meeting: Meeting
 }
