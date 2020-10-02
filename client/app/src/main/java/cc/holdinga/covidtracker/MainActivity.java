@@ -1,5 +1,10 @@
 package cc.holdinga.covidtracker;
 
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,8 +20,29 @@ public class MainActivity extends AppCompatActivity {
 
     private final String deviceName = getDeviceName();
 
+    private final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Discovery has found a device. Get the BluetoothDevice
+                // object and its info from the Intent.
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                String deviceName = device.getName();
+                String deviceHardwareAddress = device.getAddress(); // MAC address
+                System.out.println(deviceName + deviceHardwareAddress);
+            }
+            if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                mBluetoothAdapter.startDiscovery();
+            }
+        }
+    };
+
     private String getDeviceName() {
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            return null;
+        }
         return mBluetoothAdapter.getName();
     }
 
@@ -25,8 +51,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button alertButton = findViewById(R.id.alertButton);
-        alertButton.setOnClickListener(view -> reportInfectedness());
+        searchForNearbyDevices();
+
+        Button reportInfectednessButton = findViewById(R.id.alertButton);
+        reportInfectednessButton.setOnClickListener(view -> reportInfectedness());
+
+    }
+
+    private void searchForNearbyDevices() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(receiver, filter);
+        mBluetoothAdapter.startDiscovery();
     }
 
     private void reportInfectedness() {
