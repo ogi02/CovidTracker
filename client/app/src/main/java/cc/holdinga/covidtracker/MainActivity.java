@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private final String currentDeviceName = getCurrentDeviceName();
     private final Map<String, Contact> contacts = new HashMap<>();
+    private final OkHttpClient httpClient = new OkHttpClient();
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -46,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onResponse(@NonNull Call call, @NonNull Response response) {
-
+        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+            System.out.println(call.request().body() + "    " + response.body().string());
         }
     };
 
@@ -58,16 +59,16 @@ public class MainActivity extends AppCompatActivity {
         return bluetoothAdapter.getName();
     }
 
-    private void addContact(String contactDevice) {
-        if (contacts.containsKey(contactDevice)) {
-            if (isContactForReport(contacts.get(contactDevice))) {
-                contacts.remove(contactDevice);
-                reportContact(contactDevice);
+    private void addContact(String contactedDevice) {
+        if (contacts.containsKey(contactedDevice)) {
+            if (isContactForReport(contacts.get(contactedDevice))) {
+                contacts.remove(contactedDevice);
+                reportContact(contactedDevice);
             }
             return;
         }
-        if (isCurrentDeviceObligatedToReportForContact(contactDevice)) {
-            contacts.put(contactDevice, new Contact(contactDevice, LocalDateTime.now()));
+        if (isCurrentDeviceObligatedToReportForContact(contactedDevice)) {
+            contacts.put(contactedDevice, new Contact(contactedDevice, LocalDateTime.now()));
         }
     }
 
@@ -79,8 +80,20 @@ public class MainActivity extends AppCompatActivity {
         return Math.abs(minutesAfterFirstContact) >= 10000;
     }
 
-    private void reportContact(String contactDevice) {
+    private void reportContact(String contactedDevice) {
+        Request request = buildReportContactRequest(contactedDevice);
+        httpClient.newCall(request).enqueue(noActionResponseHandler);
+    }
 
+    private Request buildReportContactRequest(String contactedDevice) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("deviceName1", currentDeviceName)
+                .add("deviceName2", contactedDevice)
+                .build();
+        return new Request.Builder()
+                .url("https://api.mocki.io/v1/993b1ec5")
+                .post(requestBody)
+                .build();
     }
 
     private boolean isCurrentDeviceObligatedToReportForContact(String detectedDevice) {
@@ -108,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reportInfectedness() {
-        OkHttpClient httpClient = new OkHttpClient();
         Request request = buildReportInfectednessRequest();
         httpClient.newCall(request).enqueue(noActionResponseHandler);
     }
