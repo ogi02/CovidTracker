@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ogi02/CovidTracker/issues"
   },
-  "homepage": "https://github.com/ogi02/CovidTracker#readme"
+  "homepage": "https://github.com/ogi02/CovidTracker#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
