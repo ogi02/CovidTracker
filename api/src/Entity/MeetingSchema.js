@@ -1,4 +1,5 @@
 const EntitySchema = require('typeorm').EntitySchema;
+const Meeting = require('../Model/Meeting').Meeting;
 
 module.exports = new EntitySchema({
     name: 'Meeting',

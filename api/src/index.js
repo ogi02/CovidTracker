@@ -1,10 +1,15 @@
-import {createConnection, Connection} from "typeorm";
+const typeorm = require('typeorm');
 
-const connection = await createConnection({
-    type: "postgresql",
+typeorm.createConnection({
+    type: "postgres",
     host: "localhost",
     port: 5432,
     username: "covid",
     password: "pass12345",
-    database: "covid"
+    database: "covid",
+    synchronized: true,
+    entities: [
+        require("./Entity/DeviceSchema"),
+        require("./Entity/MeetingSchema")
+    ]
 });

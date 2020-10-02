@@ -1,4 +1,5 @@
-const EntitySchema = require("typeorm").EntitySchema;
+const EntitySchema = require('typeorm').EntitySchema;
+const Device = require('../Model/Device').Device;
 
 module.exports = new EntitySchema({
     name: 'Device',
