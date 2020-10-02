@@ -11,14 +11,18 @@ createConnection().then(() => {
 	const report = require('./Routes/Report');
 	const checkForContact = require('./Routes/CheckForContact');
 
-	// app.post('/registerDevice', registerDevice.register);
-	// app.post('/contact', contact.sth);
+	app.use('/', express.json());
+
+	app.use('/', (req, res, next) => {
+		console.log(req.body);
+		next();
+	});
+
+	app.post('/registerDevice', registerDevice.register);
+	app.post('/reportContact', contact.contact);
 	app.post('/report', report.report);
-	app.get('/checkForContact', checkForContact.checkForContact);
+	// app.get('/checkForContact', checkForContact.sth);
 
-    // registerDevice.register("d1", "sth");
-    // report.report("sami");
-    checkForContact.checkForContact("sami");
-
+	app.listen(3000)
 
 }).catch(err => console.log(err));
