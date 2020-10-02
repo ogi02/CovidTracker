@@ -1,4 +1,3 @@
-const express = require('express');
 const { getRepository } = require('typeorm');
 const Device = require('../../Entity/DeviceSchema');
 
