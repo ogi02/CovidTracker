@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleSingleContact(String contactedDevice) {
+        System.out.println(contactedDevice);
         if (existingContacts.containsKey(contactedDevice)) {
             SingleContact existingContact = existingContacts.get(contactedDevice);
             if (isSingleContactForReport(existingContact)) {
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isSingleContactExpired(SingleContact existingContact) {
-        return getMinutesAfterContact(existingContact) >= 1000;
+        return getMinutesAfterContact(existingContact) >= 10000;
     }
 
     private boolean isCurrentDeviceObligedToReportForContact(String contactedDevice) {
