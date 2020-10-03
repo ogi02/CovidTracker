@@ -5,7 +5,7 @@ const deviceRepository = getRepository(Device);
 
 const register = async (req, res) => {
 
-	d = new Device(req.body.name);
+	d = new Device(req.body.deviceName);
 
 	const user = await deviceRepository.findOne({ name: d.name })
 
