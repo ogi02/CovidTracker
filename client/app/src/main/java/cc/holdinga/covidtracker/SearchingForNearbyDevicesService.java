@@ -1,48 +1,71 @@
 package cc.holdinga.covidtracker;
 
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.IBinder;
 
-import android.bluetooth.BluetoothAdapter;
-import android.os.Bundle;
-import android.widget.Button;
-import cc.holdinga.covidtracker.models.ContactForReporting;
-import cc.holdinga.covidtracker.models.SingleContact;
-import cc.holdinga.covidtracker.models.DeviceProperties;
-import cc.holdinga.covidtracker.utils.JsonParser;
-import okhttp3.*;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
-public class MainActivity extends AppCompatActivity {
+import cc.holdinga.covidtracker.models.ContactForReporting;
+import cc.holdinga.covidtracker.models.SingleContact;
+import cc.holdinga.covidtracker.utils.JsonParser;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static cc.holdinga.covidtracker.App.SEARCHING_FOR_NEARBY_DEVICES_ID;
+
+public class SearchingForNearbyDevicesService extends Service {
 
     private final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private final String currentDeviceName = getCurrentDeviceName();
     private final Map<String, SingleContact> existingContacts = new HashMap<>();
     private final OkHttpClient httpClient = new OkHttpClient();
 
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            searchForNearbyDevices();
+        }
+    };
+
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                System.out.println("found");
                 BluetoothDevice contactedDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 handleSingleContact(contactedDevice.getName());
             }
             if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                System.out.println("not found");
                 bluetoothAdapter.startDiscovery();
             }
         }
     };
+
     private final Callback noActionResponseHandler = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -101,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         String json = JsonParser.stringify(new ContactForReporting(currentDeviceName, contactedDevice));
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
-
+        System.out.println(currentDeviceName);
         return new Request.Builder()
                 .url("http://192.168.200.132:3000/report-contact")
                 .post(requestBody)
@@ -116,37 +139,6 @@ public class MainActivity extends AppCompatActivity {
         return contactedDevice != null && contactedDevice.compareTo(currentDeviceName) < 0;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        registerDevice();
-//        searchForNearbyDevices();
-
-//        startService(new Intent(getBaseContext(), CheckForContactService.class));
-
-
-
-        Button reportInfectednessButton = findViewById(R.id.alertButton);
-        reportInfectednessButton.setOnClickListener(view -> reportInfectedness());
-
-    }
-
-    private void registerDevice(){
-        Request request = new Request.Builder()
-                .url("http://192.168.200.132:3000/register-device")
-                .post(buildDevicePropertiesRequestBody())
-                .build();
-        httpClient.newCall(request).enqueue(noActionResponseHandler);
-    }
-
-    private RequestBody buildDevicePropertiesRequestBody(){
-        String json = JsonParser.stringify(new DeviceProperties(currentDeviceName));
-
-        return RequestBody.create(MediaType.parse("application/json"), json);
-    }
-
     private void searchForNearbyDevices() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);
@@ -155,11 +147,27 @@ public class MainActivity extends AppCompatActivity {
         bluetoothAdapter.startDiscovery();
     }
 
-    private void reportInfectedness() {
-        Request request = new Request.Builder()
-                .url("http://192.168.200.132:3000/report-infectedness")
-                .post(buildDevicePropertiesRequestBody())
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Intent notificationIntent = new Intent(this, App.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, SEARCHING_FOR_NEARBY_DEVICES_ID)
+                .setContentTitle("Searching...")
+                .setContentText("Searching For Nearby Devices")
+                .setSmallIcon(R.drawable.ic_contact)
+                .setContentIntent(pendingIntent)
                 .build();
-        httpClient.newCall(request).enqueue(noActionResponseHandler);
+        startForeground(3, notification);
+        System.out.println( "----main----" + Thread.currentThread().getId());
+        new Thread(runnable).start();
+//        searchForNearbyDevices();
+        return START_STICKY;
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 }
