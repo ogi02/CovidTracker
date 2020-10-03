@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import cc.holdinga.covidtracker.models.ContactForReporting;
@@ -122,16 +123,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         registerDevice();
-//        searchForNearbyDevices();
 
-//        startService(new Intent(getBaseContext(), CheckForContactService.class));
-
-
-
-        Button reportInfectednessButton = findViewById(R.id.alertButton);
-        reportInfectednessButton.setOnClickListener(view -> reportInfectedness());
-
+        Button alertButton = findViewById(R.id.alertButton);
+        alertButton.setOnClickListener(view -> reportInfectedness());
     }
+
 
     private void registerDevice(){
         Request request = new Request.Builder()

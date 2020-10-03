@@ -159,9 +159,7 @@ public class SearchingForNearbyDevicesService extends Service {
                 .setContentIntent(pendingIntent)
                 .build();
         startForeground(3, notification);
-        System.out.println( "----main----" + Thread.currentThread().getId());
         new Thread(runnable).start();
-//        searchForNearbyDevices();
         return START_STICKY;
     }
 
