@@ -5,8 +5,8 @@ const Contact = require('../../Entity/ContactSchema');
 const contactRepository = getRepository(Contact);
 const deviceRepository = getRepository(Device)
 
-const checkForContact = async device => {
-    const getDeviceId = async () => await (await deviceRepository.findOne({ name: device })).id;
+const checkForContact = async (req, res) => {
+    const getDeviceId = async () => await (await deviceRepository.findOne({ name: req.body.name })).id;
     const deviceId = await getDeviceId();
 
     contactInfectedDevices = await contactRepository.find({
@@ -15,8 +15,8 @@ const checkForContact = async device => {
             {device2: deviceId },
         ]
     });
-    
-    return contactInfectedDevices ? true : false;
+
+    res.send.json({isContacted: contactInfectedDevices ? false : true});
 };
 
 exports.checkForContact = checkForContact;
