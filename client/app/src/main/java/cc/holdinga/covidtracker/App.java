@@ -6,7 +6,7 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 
-import cc.holdinga.covidtracker.services.SensorDataService;
+import cc.holdinga.covidtracker.services.SensorsDataService;
 
 public class App extends Application {
     public static final String CHECK_FOR_CONTACT_ID = "checkForContact";
@@ -15,7 +15,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        startService(new Intent(getBaseContext(), SensorDataService.class));
+        startService(new Intent(getBaseContext(), SensorsDataService.class));
         createNotificationChannels();
     }
 

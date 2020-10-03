@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <service android:name=".services.CheckForContactService" />
-        <service android:name=".services.SensorDataService"/>
+        <service android:name=".services.SensorsDataService"/>
     </application>
 
 </manifest>
