@@ -10,11 +10,13 @@ const contact = async (req, res) => {
 	d1 = await deviceRepository.findOne({ name: req.body.deviceName1 });
 	d2 = await deviceRepository.findOne({ name: req.body.deviceName2 });
 
-	if (d1.name === d2.name) {
-		res.status(422).json();
-		return;
-	}
 	if (d1 && d2) {
+
+		if (d1.name === d2.name) {
+			res.status(422).json();
+			return;
+		}
+
 		c = new Contact(d1.id, d2.id);
 
 		await contactRepository.insert({
