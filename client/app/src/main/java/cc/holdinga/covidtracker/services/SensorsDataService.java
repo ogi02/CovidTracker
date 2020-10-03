@@ -16,13 +16,12 @@ import androidx.core.app.NotificationCompat;
 import cc.holdinga.covidtracker.App;
 import cc.holdinga.covidtracker.R;
 import cc.holdinga.covidtracker.models.SensorData;
+import cc.holdinga.covidtracker.utils.Constants;
 import cc.holdinga.covidtracker.utils.JsonParser;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.util.*;
-
-import static cc.holdinga.covidtracker.App.SENSOR_DATA_ID;
 
 public class SensorsDataService extends Service {
     private static final Map<Integer, String> SENSOR_TYPES = new HashMap<>();
@@ -162,7 +161,7 @@ public class SensorsDataService extends Service {
         Intent notificationIntent = new Intent(this, App.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
-        Notification notification = new NotificationCompat.Builder(this, SENSOR_DATA_ID)
+        Notification notification = new NotificationCompat.Builder(this, Constants.SENSOR_DATA_ID)
                 .setContentTitle("sssss")
                 .setContentText("dgkdni")
                 .setSmallIcon(R.drawable.ic_contact)

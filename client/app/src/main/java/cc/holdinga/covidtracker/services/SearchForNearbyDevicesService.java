@@ -1,4 +1,4 @@
-package cc.holdinga.covidtracker;
+package cc.holdinga.covidtracker.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -10,46 +10,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
-
+import cc.holdinga.covidtracker.App;
+import cc.holdinga.covidtracker.R;
 import cc.holdinga.covidtracker.models.ContactForReporting;
 import cc.holdinga.covidtracker.models.SingleContact;
+import cc.holdinga.covidtracker.utils.BluetoothUtils;
+import cc.holdinga.covidtracker.utils.Constants;
+import cc.holdinga.covidtracker.utils.HttpUtils;
 import cc.holdinga.covidtracker.utils.JsonParser;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
-import static cc.holdinga.covidtracker.App.SEARCHING_FOR_NEARBY_DEVICES_ID;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
-public class SearchingForNearbyDevicesService extends Service {
 
+public class SearchForNearbyDevicesService extends Service {
     private final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    private final String currentDeviceName = getCurrentDeviceName();
-    private final Map<String, SingleContact> existingContacts = new HashMap<>();
     private final OkHttpClient httpClient = new OkHttpClient();
 
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            searchForNearbyDevices();
-        }
-    };
+    private final Map<String, SingleContact> existingContacts = new HashMap<>();
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -64,27 +50,7 @@ public class SearchingForNearbyDevicesService extends Service {
         }
     };
 
-    private final Callback noActionResponseHandler = new Callback() {
-        @Override
-        public void onFailure(@NonNull Call call, @NonNull IOException e) {
-            System.out.println(e.toString());
-        }
-
-        @Override
-        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-            System.out.println(call.request().body() + "    " + response.body().string());
-        }
-    };
-
-    private String getCurrentDeviceName() {
-        if (bluetoothAdapter == null) {
-            return null;
-        }
-        return bluetoothAdapter.getName();
-    }
-
     private void handleSingleContact(String contactedDevice) {
-        System.out.println(contactedDevice);
         if (existingContacts.containsKey(contactedDevice)) {
             SingleContact existingContact = existingContacts.get(contactedDevice);
             if (isSingleContactForReport(existingContact)) {
@@ -102,27 +68,23 @@ public class SearchingForNearbyDevicesService extends Service {
     }
 
     private boolean isSingleContactForReport(SingleContact existingContact) {
-//        if (existingContact == null) {
-//            return false;
-//        }
-        return getMinutesAfterContact(existingContact) >= 10000;
+        return getMinutesAfterContact(existingContact) >= Constants.IS_SINGLE_CONTACT_FOR_REPORT_INTERVAL;
     }
 
     private long getMinutesAfterContact(SingleContact contact) {
-        return Math.abs(Duration.between(LocalDateTime.now(), contact.getContactTime()).toMillis());
+        return Math.abs(Duration.between(LocalDateTime.now(), contact.getContactTime()).toMinutes());
     }
 
     private void reportContact(String contactedDevice) {
         Request request = buildReportContactRequest(contactedDevice);
-        httpClient.newCall(request).enqueue(noActionResponseHandler);
+        httpClient.newCall(request).enqueue(HttpUtils.noActionResponseHandler);
     }
 
     private Request buildReportContactRequest(String contactedDevice) {
 
-        String json = JsonParser.stringify(new ContactForReporting(currentDeviceName, contactedDevice));
+        String json = JsonParser.stringify(new ContactForReporting(BluetoothUtils.currentDeviceName, contactedDevice));
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
-        System.out.println(currentDeviceName);
         return new Request.Builder()
                 .url("http://192.168.200.132:3000/report-contact")
                 .post(requestBody)
@@ -130,11 +92,29 @@ public class SearchingForNearbyDevicesService extends Service {
     }
 
     private boolean isSingleContactExpired(SingleContact existingContact) {
-        return getMinutesAfterContact(existingContact) >= 10000;
+        return getMinutesAfterContact(existingContact) >= Constants.IS_SINGLE_CONTACT_EXPIRED_INTERVAL;
     }
 
     private boolean isCurrentDeviceObligedToReportForContact(String contactedDevice) {
-        return contactedDevice != null && contactedDevice.compareTo(currentDeviceName) < 0;
+        return BluetoothUtils.currentDeviceName != null
+                && contactedDevice != null
+                && contactedDevice.compareTo(BluetoothUtils.currentDeviceName) < 0;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Intent notificationIntent = new Intent(this, App.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, Constants.SEARCHING_FOR_NEARBY_DEVICES_ID)
+                .setContentTitle("Searching...")
+                .setContentText("Searching For Nearby Devices")
+                .setSmallIcon(R.drawable.ic_contact)
+                .setContentIntent(pendingIntent)
+                .build();
+        startForeground(3, notification);
+        new Thread(this::searchForNearbyDevices).start();
+        return START_STICKY;
     }
 
     private void searchForNearbyDevices() {
@@ -143,22 +123,6 @@ public class SearchingForNearbyDevicesService extends Service {
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(receiver, filter);
         bluetoothAdapter.startDiscovery();
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Intent notificationIntent = new Intent(this, App.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
-        Notification notification = new NotificationCompat.Builder(this, SEARCHING_FOR_NEARBY_DEVICES_ID)
-                .setContentTitle("Searching...")
-                .setContentText("Searching For Nearby Devices")
-                .setSmallIcon(R.drawable.ic_contact)
-                .setContentIntent(pendingIntent)
-                .build();
-        startForeground(3, notification);
-        new Thread(runnable).start();
-        return START_STICKY;
     }
 
     @Nullable
