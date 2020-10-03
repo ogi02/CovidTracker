@@ -7,7 +7,12 @@ const register = async (req, res) => {
 
 	d = new Device(req.body.deviceName);
 
-	const user = await deviceRepository.findOne({ name: d.name })
+	if(!d.name) {
+		res.status(422).json();
+		return;
+	}
+
+	const user = await deviceRepository.findOne({ name: d.name });
 
 	if(!user) {
 		await deviceRepository.insert({
@@ -23,4 +28,4 @@ const register = async (req, res) => {
 
 }
 
-exports.register = register
+exports.register = register;
