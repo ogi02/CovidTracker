@@ -21,8 +21,8 @@ createConnection().then(() => {
 	// app.post('/registerDevice', registerDevice.register);
 	// app.post('/reportContact', contact.contact);
 	// app.post('/report', report.report);
-	// app.get('/checkForContact', checkForContact.sth);
+	app.post('/checkForContact', checkForContact.checkForContact);
 
-	// app.listen(3000)
+	app.listen(3001)
 
 }).catch(err => console.log(err));
