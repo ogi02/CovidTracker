@@ -15,10 +15,10 @@ const register = async (req, res) => {
 			isInfected: d.isInfected
 		});
 
-		res.sendStatus(201);
+		res.status(201).json();
 	}
 	else {
-		res.sendStatus(204);
+		res.status(204).json();
 	}
 
 }

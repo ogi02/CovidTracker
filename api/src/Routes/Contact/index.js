@@ -19,9 +19,9 @@ const contact = async (req, res) => {
 			timestamp: c.timestamp
 		});
 
-		res.sendStatus(201);
+		res.status(201).json();
 	} else {
-		res.sendStatus(404);
+		res.status(404).json();
 	}
 
 }
