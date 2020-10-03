@@ -44,7 +44,7 @@ public class CheckForContactService extends Service {
                     Request request = buildWasIsContactCheckRequest();
                     httpClient.newCall(request).enqueue(ResponseHandler);
                 }
-            }, 10000, 1000 * 60);
+            }, 10000, 1000 * 60 * 3);
         }
     };
 
