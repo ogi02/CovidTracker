@@ -1,4 +1,4 @@
-package cc.holdinga.covidtracker;
+package cc.holdinga.covidtracker.services;
 
 import android.app.Notification;
 import android.app.Service;
@@ -14,6 +14,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import java.io.IOException;
 
+import cc.holdinga.covidtracker.R;
 import cc.holdinga.covidtracker.models.CheckForContactResponse;
 import cc.holdinga.covidtracker.models.DeviceProperties;
 import cc.holdinga.covidtracker.utils.JsonParser;

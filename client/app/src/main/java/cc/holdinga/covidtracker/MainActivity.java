@@ -14,6 +14,7 @@ import android.widget.Button;
 import cc.holdinga.covidtracker.models.ContactForReporting;
 import cc.holdinga.covidtracker.models.SingleContact;
 import cc.holdinga.covidtracker.models.DeviceProperties;
+import cc.holdinga.covidtracker.services.CheckForContactService;
 import cc.holdinga.covidtracker.utils.JsonParser;
 import okhttp3.*;
 
