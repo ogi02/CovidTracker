@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+
                 BluetoothDevice contactedDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 handleSingleContact(contactedDevice.getName());
             }
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
-        if (isCurrentDeviceObligatedToReportForContact(contactedDevice)) {
+        if (isCurrentDeviceObligedToReportForContact(contactedDevice)) {
             existingContacts.put(contactedDevice, new SingleContact(contactedDevice, LocalDateTime.now()));
         }
     }
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         return getMinutesAfterContact(existingContact) >= 1000;
     }
 
-    private boolean isCurrentDeviceObligatedToReportForContact(String contactedDevice) {
+    private boolean isCurrentDeviceObligedToReportForContact(String contactedDevice) {
         return contactedDevice != null && contactedDevice.compareTo(currentDeviceName) < 0;
     }
 
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         registerDevice();
         searchForNearbyDevices();
 
-        startService(new Intent(getBaseContext(), checkForContactService.class));
+        startService(new Intent(getBaseContext(), CheckForContactService.class));
 
         Button reportInfectednessButton = findViewById(R.id.alertButton);
         reportInfectednessButton.setOnClickListener(view -> reportInfectedness());
