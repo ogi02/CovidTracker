@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
 
 import androidx.annotation.NonNull;
@@ -13,6 +12,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cc.holdinga.covidtracker.models.CheckForContactResponse;
 import cc.holdinga.covidtracker.models.DeviceProperties;
@@ -34,7 +35,18 @@ public class CheckForContactService extends Service {
     private NotificationManagerCompat notificationManager;
     private final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private final String currentDeviceName = getCurrentDeviceName();
-    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+    @Override
+        public void run() {
+            new Timer().scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Request request = buildWasIsContactCheckRequest();
+                    httpClient.newCall(request).enqueue(ResponseHandler);
+                }
+            }, 0, 1000 * 60 * 3);
+        }
+    };
 
     private String getCurrentDeviceName() {
         if (bluetoothAdapter == null) {
@@ -51,17 +63,10 @@ public class CheckForContactService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        checkForContacted.run();
+        new Thread(runnable).start();
         return START_STICKY;
     }
 
-    private Runnable checkForContacted = new Runnable() {
-        @Override
-        public void run() {
-            Request request = buildWasIsContactCheckRequest();
-            httpClient.newCall(request).enqueue(ResponseHandler);
-        }
-    };
 
     private Request buildWasIsContactCheckRequest(){
 
@@ -82,7 +87,6 @@ public class CheckForContactService extends Service {
 
         @Override
         public void onResponse(@NonNull Call call, @NonNull Response httpResponse) {
-            handler.postDelayed(checkForContacted, 1000);
             try {
                 ResponseBody responseBody = httpResponse.body();
                 if (responseBody == null) {
