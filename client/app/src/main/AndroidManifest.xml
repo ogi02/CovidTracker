@@ -24,8 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <service android:name=".CheckForContactService" />
         <service android:name=".SearchingForNearbyDevicesService" />
+        <service android:name=".services.CheckForContactService" />
+        <service android:name=".services.SensorsDataService"/>
     </application>
 
 </manifest>

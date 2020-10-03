@@ -1,4 +1,4 @@
-package cc.holdinga.covidtracker;
+package cc.holdinga.covidtracker.services;
 
 import android.app.Notification;
 import android.app.Service;
@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import cc.holdinga.covidtracker.R;
 import cc.holdinga.covidtracker.models.CheckForContactResponse;
 import cc.holdinga.covidtracker.models.DeviceProperties;
 import cc.holdinga.covidtracker.utils.JsonParser;
