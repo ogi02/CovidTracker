@@ -18,11 +18,11 @@ createConnection().then(() => {
 		next();
 	});
 
-	// app.post('/registerDevice', registerDevice.register);
-	// app.post('/reportContact', contact.contact);
-	// app.post('/report', report.report);
+	app.post('/register-device', registerDevice.register);
+	app.post('/report-contact', contact.contact);
+	app.post('/report-infectedness', report.report);
 	// app.get('/checkForContact', checkForContact.sth);
 
-	// app.listen(3000)
+	app.listen(3000)
 
 }).catch(err => console.log(err));
