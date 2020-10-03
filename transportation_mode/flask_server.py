@@ -1,23 +1,23 @@
-from json import loads
+from flask import Flask, jsonify
+from tensorflow.keras.models import load_model
 
-from flask import Flask
-from numpy import array
-from tensorflow import keras
-
-from utils import decode_output
+from utils import decode_output, order_params, parse_json
 
 app = Flask(__name__)
-model = keras.models.load_model('model')
+model = load_model('model')
 
 
-@app.route('/', methods=['POST'])
+@app.route('/')
 def index():
-    test = loads(request.get_json()) # load variables from json request
-    out = model.predict(array(test.values())) # pass to array and predict mode
-
-    return decode_output(argmax(out)) # humanize output
+    return ('There is nothing to see here')
 
 
-if __name__ == '__main__':
+@app.route('/predict', methods=['POST'])
+def predict():
+    params = order_params(parse_json(
+        request.get_json()))  # split and order parameters
 
-    print('Hello')
+    out = model.predict(params)  # pass to array and predict mode
+
+    # humanize output and pass to json
+    return jsonify(transport=decode_output(argmax(out)))
