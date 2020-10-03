@@ -97,12 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Request buildReportContactRequest(String contactedDevice) {
 
-        String json = "";
-        try {
-            json = JsonParser.stringify(new ContactForReporting(currentDeviceName, contactedDevice));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String json = JsonParser.stringify(new ContactForReporting(currentDeviceName, contactedDevice));
+
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
 
         return new Request.Builder()
@@ -127,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         registerDevice();
         searchForNearbyDevices();
 
-        startService(new Intent(getBaseContext(), isContactedService.class));
+        startService(new Intent(getBaseContext(), checkForContactService.class));
 
         Button reportInfectednessButton = findViewById(R.id.alertButton);
         reportInfectednessButton.setOnClickListener(view -> reportInfectedness());
@@ -143,12 +139,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private RequestBody buildDevicePropertiesRequestBody(){
-        String json = "";
-        try {
-            json = JsonParser.stringify(new DeviceProperties(currentDeviceName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String json = JsonParser.stringify(new DeviceProperties(currentDeviceName));
+
         return RequestBody.create(MediaType.parse("application/json"), json);
     }
 

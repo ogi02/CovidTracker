@@ -1,12 +1,10 @@
 package cc.holdinga.covidtracker;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,9 +13,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 
+import cc.holdinga.covidtracker.models.CheckForContactResponse;
+import cc.holdinga.covidtracker.utils.JsonParser;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -40,7 +38,6 @@ public class checkForContactService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         checkForContacted.run();
         return START_STICKY;
     }
@@ -67,18 +64,27 @@ public class checkForContactService extends Service {
         }
 
         @Override
-        public void onResponse(@NonNull Call call, @NonNull Response response) {
-            if(true){
-                notificationManager = NotificationManagerCompat.from(checkForContactService.this);
+        public void onResponse(@NonNull Call call, @NonNull Response httpResponse) {
+            try {
+                CheckForContactResponse checkForContactResponse =  JsonParser.parse(httpResponse.body().string(), CheckForContactResponse.class);
+                if(checkForContactResponse == null){
+                    handler.postDelayed(checkForContacted, 1000 * 60 * 3);
+                    return;
+                }
+                if(checkForContactResponse.getIsContacted()){
+                    notificationManager = NotificationManagerCompat.from(checkForContactService.this);
 
-                Notification notification = new NotificationCompat.Builder(checkForContactService.this, CHECK_FOR_CONTACT_ID)
-                        .setSmallIcon(R.drawable.ic_contact)
-                        .setContentTitle("Warning")
-                        .setContentText("You were in contact with an infected person")
-                        .build();
-                notificationManager.notify(1, notification);
+                    Notification notification = new NotificationCompat.Builder(checkForContactService.this, CHECK_FOR_CONTACT_ID)
+                            .setSmallIcon(R.drawable.ic_contact)
+                            .setContentTitle("Warning")
+                            .setContentText("You were in contact with an infected person")
+                            .build();
+                    notificationManager.notify(1, notification);
+                }
+                handler.postDelayed(checkForContacted, 1000 * 60 * 3);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            handler.postDelayed(checkForContacted, 1000 * 60 * 3);
         }
     };
 
