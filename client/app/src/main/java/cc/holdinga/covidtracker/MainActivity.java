@@ -11,7 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.widget.Button;
-import cc.holdinga.covidtracker.models.Contact;
+import cc.holdinga.covidtracker.models.ContactForReporting;
+import cc.holdinga.covidtracker.models.SingleContact;
+import cc.holdinga.covidtracker.models.DeviceProperties;
+import cc.holdinga.covidtracker.utils.JsonParser;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private final String currentDeviceName = getCurrentDeviceName();
-    private final Map<String, Contact> contacts = new HashMap<>();
+    private final Map<String, SingleContact> existingContacts = new HashMap<>();
     private final OkHttpClient httpClient = new OkHttpClient();
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice contactedDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                addContact(contactedDevice.getName());
+                handleSingleContact(contactedDevice.getName());
             }
             if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 bluetoothAdapter.startDiscovery();
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private final Callback noActionResponseHandler = new Callback() {
         @Override
         public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
+            System.out.println(e.toString());
         }
 
         @Override
@@ -59,25 +62,32 @@ public class MainActivity extends AppCompatActivity {
         return bluetoothAdapter.getName();
     }
 
-    private void addContact(String contactedDevice) {
-        if (contacts.containsKey(contactedDevice)) {
-            if (isContactForReport(contacts.get(contactedDevice))) {
-                contacts.remove(contactedDevice);
+    private void handleSingleContact(String contactedDevice) {
+        if (existingContacts.containsKey(contactedDevice)) {
+            SingleContact existingContact = existingContacts.get(contactedDevice);
+            if (isSingleContactForReport(existingContact)) {
+                existingContacts.remove(contactedDevice);
                 reportContact(contactedDevice);
+            }
+            if (isSingleContactExpired(existingContact)) {
+                existingContacts.remove(contactedDevice);
             }
             return;
         }
         if (isCurrentDeviceObligatedToReportForContact(contactedDevice)) {
-            contacts.put(contactedDevice, new Contact(contactedDevice, LocalDateTime.now()));
+            existingContacts.put(contactedDevice, new SingleContact(contactedDevice, LocalDateTime.now()));
         }
     }
 
-    private boolean isContactForReport(Contact contact) {
-        if (contact == null) {
-            return false;
-        }
-        long minutesAfterFirstContact = Duration.between(LocalDateTime.now(), contact.getContactTime()).toMillis();
-        return Math.abs(minutesAfterFirstContact) >= 10000;
+    private boolean isSingleContactForReport(SingleContact existingContact) {
+//        if (existingContact == null) {
+//            return false;
+//        }
+        return getMinutesAfterContact(existingContact) >= 10000;
+    }
+
+    private long getMinutesAfterContact(SingleContact contact) {
+        return Math.abs(Duration.between(LocalDateTime.now(), contact.getContactTime()).toMillis());
     }
 
     private void reportContact(String contactedDevice) {
@@ -86,18 +96,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Request buildReportContactRequest(String contactedDevice) {
-        RequestBody requestBody = new FormBody.Builder()
-                .add("deviceName1", currentDeviceName)
-                .add("deviceName2", contactedDevice)
-                .build();
+
+        String json = "";
+        try {
+            json = JsonParser.stringify(new ContactForReporting(currentDeviceName, contactedDevice));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
+
         return new Request.Builder()
-                .url("https://api.mocki.io/v1/993b1ec5")
+                .url("http://192.168.200.132:3000/report-contact")
                 .post(requestBody)
                 .build();
     }
 
-    private boolean isCurrentDeviceObligatedToReportForContact(String detectedDevice) {
-        return detectedDevice != null && detectedDevice.compareTo(currentDeviceName) < 0;
+    private boolean isSingleContactExpired(SingleContact existingContact) {
+        return getMinutesAfterContact(existingContact) >= 1000;
+    }
+
+    private boolean isCurrentDeviceObligatedToReportForContact(String contactedDevice) {
+        return contactedDevice != null && contactedDevice.compareTo(currentDeviceName) < 0;
     }
 
     @Override
@@ -115,16 +134,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void registerDevice(){
         Request request = new Request.Builder()
-                .url("https://api.mocki.io/v1/993b1ec5")
+                .url("http://192.168.200.132:3000/register-device")
                 .post(buildDevicePropertiesRequestBody())
                 .build();
         httpClient.newCall(request).enqueue(noActionResponseHandler);
     }
 
     private RequestBody buildDevicePropertiesRequestBody(){
-        return new FormBody.Builder()
-                .add("name", currentDeviceName)
-                .build();
+        String json = "";
+        try {
+            json = JsonParser.stringify(new DeviceProperties(currentDeviceName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return RequestBody.create(MediaType.parse("application/json"), json);
     }
 
     private void searchForNearbyDevices() {
@@ -137,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void reportInfectedness() {
         Request request = new Request.Builder()
-                .url("https://api.mocki.io/v1/993b1ec5")
+                .url("http://192.168.200.132:3000/report-infectedness")
                 .post(buildDevicePropertiesRequestBody())
                 .build();
         httpClient.newCall(request).enqueue(noActionResponseHandler);

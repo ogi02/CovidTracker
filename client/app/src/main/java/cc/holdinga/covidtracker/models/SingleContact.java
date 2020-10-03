@@ -2,13 +2,13 @@ package cc.holdinga.covidtracker.models;
 
 import java.time.LocalDateTime;
 
-public class Contact {
+public class SingleContact {
 
     private final String deviceName;
 
     private final LocalDateTime contactTime;
 
-    public Contact(String deviceName, LocalDateTime contactTime) {
+    public SingleContact(String deviceName, LocalDateTime contactTime) {
         this.deviceName = deviceName;
         this.contactTime = contactTime;
     }
