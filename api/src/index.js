@@ -14,6 +14,7 @@ createConnection().then(() => {
 	app.use('/', express.json());
 
 	app.use('/', (req, res, next) => {
+		console.log('\n\n');
 		console.log(req.body);
 		next();
 	});
@@ -21,8 +22,8 @@ createConnection().then(() => {
 	app.post('/register-device', registerDevice.register);
 	app.post('/report-contact', contact.contact);
 	app.post('/report-infectedness', report.report);
-	// app.get('/checkForContact', checkForContact.sth);
+	app.post('/check-for-contact', checkForContact.checkForContact);
 
-	app.listen(3000)
+	app.listen(3000);
 
 }).catch(err => console.log(err));

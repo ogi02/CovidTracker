@@ -14,8 +14,8 @@ const contact = async (req, res) => {
 		c = new Contact(d1.id, d2.id);
 
 		await contactRepository.insert({
-			device1: c.deviceName1,
-			device2: c.deviceName2,
+			device1: c.device1Id,
+			device2: c.device2Id,
 			timestamp: c.timestamp
 		});
 

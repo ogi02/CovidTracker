@@ -16,6 +16,10 @@ module.exports = new EntitySchema({
         isInfected: {
             type: 'int',
             default: 0
+        },
+        lastKnownTransport: {
+            type: 'varchar',
+            default: ''
         }
     },
 });

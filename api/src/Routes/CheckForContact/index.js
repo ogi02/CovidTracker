@@ -6,23 +6,33 @@ const contactRepository = getRepository(Contact);
 const deviceRepository = getRepository(Device)
 
 const checkForContact = async (req, res) => {
-    const getDeviceId = async () => {
-        const device = await deviceRepository.findOne({ name: req.body.name });
 
-        return device ? device.id : null;
-    }
-    const deviceId = await getDeviceId() ? await getDeviceId() : null;
-    if (deviceId) {
-        contactInfectedDevices = await contactRepository.find({
+    const device = await deviceRepository.findOne({ name: req.body.deviceName });
+
+    if (device) {
+        
+        contacts = await contactRepository.find({
             where: [
-                {device1: deviceId },
-                {device2: deviceId }, 
+                {device1: device.id },
+                {device2: device.id }, 
             ]
         });
-        res.json({isContacted: contactInfectedDevices.length !== 0 ? true : false});
+
+        let isContacted = false;
+
+        contacts.forEach(contact => {
+            if ((contact.device1.isSick === 1 && contact.device1.id !== device.id) ||
+                (contact.device2.isSick === 1 && contact.device2.id !== device.id)) {
+                isContacted = true;
+            }
+        });
+
+        res.status(200).json({isContacted: isContacted});
+
         return;   
     }
-    res.status(404).send('Device do not exist in our database');
+
+    res.status(404).json();
 };
 
 exports.checkForContact = checkForContact;
