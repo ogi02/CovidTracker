@@ -1,7 +1,7 @@
 package cc.holdinga.covidtracker.utils;
 
 public class Constants {
-    public static final String API_URL = "http://192.168.200.132:3000";
+    public static final String API_URL = "http://192.168.200.145:3000";
 
     public static final String CHECK_FOR_CONTACT_NOTIFICATION_CHANNEL_ID = "checkForContact";
     public static final String SEARCHING_FOR_NEARBY_DEVICES_NOTIFICATION_CHANNEL_ID = "searchingForNearbyDevices";
@@ -15,8 +15,8 @@ public class Constants {
     public static final long IS_SINGLE_CONTACT_FOR_REPORT_INTERVAL = getOneMinuteInMilliseconds();
     public static final long IS_SINGLE_CONTACT_EXPIRED_INTERVAL = getOneMinuteInMilliseconds();
 
-    public static final int COLLECTING_SENSORS_DATA_INTERVAL = 5000;
-    public static final long INTERVAL_BETWEEN_COLLECTING_SENSORS_DATA = getOneMinuteInMilliseconds() * 10;
+    public static final int COLLECTING_SENSORS_DATA_INTERVAL = 10000;
+    public static final long INTERVAL_BETWEEN_COLLECTING_SENSORS_DATA = getOneMinuteInMilliseconds() / 2;
 
     private static long getOneMinuteInMilliseconds() {
         return  1000 * 60;

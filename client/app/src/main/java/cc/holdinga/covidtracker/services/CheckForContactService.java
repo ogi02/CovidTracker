@@ -65,7 +65,7 @@ public class CheckForContactService extends Service {
         String json = JsonParser.stringify(new DeviceProperties(BluetoothUtils.currentDeviceName));
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
         return new Request.Builder()
-                .url("http://192.168.200.132:3000/check-for-contact")
+                .url(Constants.API_URL + "/check-for-contact")
                 .post(requestBody)
                 .build();
     }

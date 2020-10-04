@@ -40,6 +40,7 @@ public class SensorsDataService extends Service {
         ANDROID_SENSOR_TYPES.put(Sensor.TYPE_LINEAR_ACCELERATION, "linear_acceleration");
         ANDROID_SENSOR_TYPES.put(Sensor.TYPE_ROTATION_VECTOR, "rotation_vector");
         ANDROID_SENSOR_TYPES.put(Sensor.TYPE_GAME_ROTATION_VECTOR, "game_rotation_vector");
+        ANDROID_SENSOR_TYPES.put(Sensor.TYPE_ORIENTATION, "orientation");
     }
 
     private final OkHttpClient httpClient = new OkHttpClient();
@@ -72,13 +73,6 @@ public class SensorsDataService extends Service {
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-        }
-    };
-
-    private final TimerTask mediaRecorderHandler = new TimerTask() {
-        @Override
-        public void run() {
-            mediaRecorderRawData.add(mediaRecorder.getMaxAmplitude());
         }
     };
 
@@ -122,7 +116,12 @@ public class SensorsDataService extends Service {
                 startAndroidSensors(sensorManager);
                 startMediaRecorder();
                 Timer mediaRecorderTimer = new Timer();
-                mediaRecorderTimer.scheduleAtFixedRate(mediaRecorderHandler, 0, 20);
+                mediaRecorderTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        mediaRecorderRawData.add(mediaRecorder.getMaxAmplitude());
+                    }
+                }, 0, 20);
                 setTimeout(() -> {
                     sensorManager.unregisterListener(sensorsEventListener);
                     mediaRecorder.stop();
@@ -150,7 +149,8 @@ public class SensorsDataService extends Service {
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         try {
             mediaRecorder.prepare();
-        } catch (IOException e) {
+            Thread.sleep(1000);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         mediaRecorder.start();
@@ -187,8 +187,11 @@ public class SensorsDataService extends Service {
     }
 
     private double calculateStd(List<Double> values) {
-        double mean = values.stream().mapToDouble(Double::valueOf).average().orElse(0);
         int valuesSize = values.size();
+        if (valuesSize == 0) {
+            return 0;
+        }
+        double mean = values.stream().mapToDouble(Double::valueOf).average().orElse(0);
         return Math.sqrt(values
                 .stream()
                 .mapToDouble(Double::doubleValue)
