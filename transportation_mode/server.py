@@ -5,7 +5,8 @@ from xgboost import XGBClassifier
 from utils import decode_output, order_params, parse_json
 
 app = Flask(__name__)
-xgb = XGBClassifier().load_model('xgb.dat')
+xgb = XGBClassifier()
+xgb.load_model('xgb.dat')
 
 
 @app.route('/', methods=['GET'])
@@ -22,4 +23,4 @@ def index():
     prediction = xgb.predict(params)
 
     # humanize output and pass to json
-    return jsonify(transport=decode_output(prediction))
+    return jsonify(transport=decode_output(int(prediction)))
