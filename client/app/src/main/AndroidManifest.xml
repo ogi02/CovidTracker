@@ -18,7 +18,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MapActivity"></activity>
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyAj_sAeRsFHi8wzeTU0CEHJ3kidc5Hbob8"/>
+
+        <activity android:name=".MapActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
