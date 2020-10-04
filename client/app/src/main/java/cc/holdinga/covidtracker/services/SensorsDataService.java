@@ -16,6 +16,8 @@ import androidx.core.app.NotificationCompat;
 import cc.holdinga.covidtracker.App;
 import cc.holdinga.covidtracker.R;
 import cc.holdinga.covidtracker.models.SensorData;
+import cc.holdinga.covidtracker.models.SensorsDataRequest;
+import cc.holdinga.covidtracker.utils.BluetoothUtils;
 import cc.holdinga.covidtracker.utils.Constants;
 import cc.holdinga.covidtracker.utils.HttpUtils;
 import cc.holdinga.covidtracker.utils.JsonParser;
@@ -202,8 +204,9 @@ public class SensorsDataService extends Service {
         return processSensorRawData(filteredData);
     }
 
-    private Request buildSensorDataRequest(Map<String, SensorData> sensorsProcessedData) {
-        String json = JsonParser.stringify(sensorsProcessedData);
+    private Request buildSensorDataRequest(Map<String, SensorData> sensorsData) {
+        SensorsDataRequest sensorsDataRequest = new SensorsDataRequest(BluetoothUtils.currentDeviceName, sensorsData);
+        String json = JsonParser.stringify(sensorsDataRequest);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
         return new Request.Builder()
                 .url(Constants.API_URL + "/sensor-data")
