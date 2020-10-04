@@ -71,13 +71,9 @@ public class SearchForNearbyDevicesService extends Service {
     }
 
     private boolean isSingleContactForReport(SingleContact existingContact) {
-//        return getMinutesAfterContact(existingContact) >= Constants.IS_SINGLE_CONTACT_FOR_REPORT_INTERVAL;
         return existingContact.getMillisecondsAfterInitialContact() >= Constants.IS_SINGLE_CONTACT_FOR_REPORT_INTERVAL;
     }
 
-//    private long getMinutesAfterContact(SingleContact contact) {
-//        return Math.abs(Duration.between(LocalDateTime.now(), contact.getContactTime()).toMillis());
-//    }
 
     private void reportContact(String contactedDevice) {
         Request request = buildReportContactRequest(contactedDevice);
@@ -96,7 +92,6 @@ public class SearchForNearbyDevicesService extends Service {
     }
 
     private boolean isSingleContactExpired(SingleContact existingContact) {
-//        return getMinutesAfterContact(existingContact) >= Constants.IS_SINGLE_CONTACT_EXPIRED_INTERVAL;
         return existingContact.getMillisecondsAfterLastContact() >= Constants.IS_SINGLE_CONTACT_EXPIRED_INTERVAL;
     }
 
