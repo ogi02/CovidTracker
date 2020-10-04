@@ -56,14 +56,11 @@ public class CheckForContactService extends Service {
             if (checkForContactResponse == null) {
                 return;
             }
-
             if (checkForContactResponse.getIsContacted()) {
-                String notificationContent = "You may have been in contact with a COVID-19 infected person while being " + checkForContactResponse.getTransport1();
-                if(!checkForContactResponse.getTransport1().equals(checkForContactResponse.getTransport2())){
-                    notificationContent += " or " + checkForContactResponse.getTransport2();
-                }
-                notificationContent += " on " + checkForContactResponse.getTimestamp();
-                pushNotificationForContact(notificationContent);
+                NotificationManagerCompat.from(CheckForContactService.this).notify(
+                Constants.ON_CONTACT_NOTIFICATION_ID,
+                        buildNotificationForContact(checkForContactResponse)
+                );
             }
         }
     };
@@ -78,15 +75,23 @@ public class CheckForContactService extends Service {
     }
 
 
-    private void pushNotificationForContact(String notificationContent) {
+    private Notification buildNotificationForContact(CheckForContactResponse checkForContactResponse) {
+
+        String notificationContent = "You may have been in contact with a COVID-19 infected person while being " + checkForContactResponse.getTransport1();
+        if(!checkForContactResponse.getTransport1().equals(checkForContactResponse.getTransport2())){
+            notificationContent += " or " + checkForContactResponse.getTransport2();
+        }
+        notificationContent += " on " + checkForContactResponse.getTimestamp();
+
+
         Intent resultIntent = new Intent(this, MapActivity.class)
-                .putExtra("lat", 42.662683)
-                .putExtra("long", 23.373346)
-                .putExtra("text", notificationContent);
+                .putExtra("latitude", checkForContactResponse.getLatitude())
+                .putExtra("longitude", checkForContactResponse.getLongitude())
+                .putExtra("pinTitle", notificationContent);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification notification = new NotificationCompat
+        return new NotificationCompat
                 .Builder(CheckForContactService.this, Constants.CHECK_FOR_CONTACT_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_contact)
                 .setContentTitle("Warning")
@@ -96,10 +101,6 @@ public class CheckForContactService extends Service {
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
                 .build();
-        NotificationManagerCompat.from(CheckForContactService.this).notify(
-                Constants.ON_CONTACT_NOTIFICATION_ID,
-                notification
-        );
     }
 
     @Nullable

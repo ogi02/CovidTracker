@@ -23,9 +23,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
 
         Intent intent = getIntent();
-        latitude = intent.getDoubleExtra("lat", 1);
-        longitude = intent.getDoubleExtra("long", 1);
-        pinTitle = intent.getStringExtra("text");
+        latitude = intent.getDoubleExtra("latitude", 1);
+        longitude = intent.getDoubleExtra("longitude", 1);
+        pinTitle = intent.getStringExtra("pinTitle");
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         if (mapFragment == null) {
