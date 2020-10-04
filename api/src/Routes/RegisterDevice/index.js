@@ -14,6 +14,7 @@ const registerDevice = async (req, res) => {
 	}
 
 	console.log('register-device');
+	console.log(req.body.deviceName);
 
 	// Get device and check if it exists
 	const device = await deviceRepository.findOne({ name: d.name });

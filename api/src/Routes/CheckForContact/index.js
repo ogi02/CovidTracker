@@ -15,7 +15,8 @@ const checkForContact = async (req, res) => {
         return;
     }
 
-    console.log('sensor-data');
+    console.log('check-for-contact');
+    console.log(req.body.deviceName);
 
     // Return notification and remove notification pending
     const notification = await pendingNotificationRepository.findOne({ contacted: device });
@@ -26,7 +27,9 @@ const checkForContact = async (req, res) => {
             isContacted: true,
             transport1: notification.lastKnownTransport1,
             transport2: notification.lastKnownTransport2,
-            timestamp: notification.timestamp
+            timestamp: notification.timestamp,
+            longitude: notification.longitude,
+            latitude: notification.latitude
         });
 
     } else {

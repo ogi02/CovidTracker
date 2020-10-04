@@ -18,7 +18,7 @@ createConnection().then(() => {
 
 	app.use('/', (req, res, next) => {
 		console.log('\n\n');
-		console.log(req.body);
+		// console.log(req.body);
 		next();
 	});
 

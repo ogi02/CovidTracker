@@ -16,6 +16,7 @@ const reportInfectedness = async (req, res) => {
     }
 
     console.log('report-infectedness');
+    console.log(req.body.deviceName);
 
     // Set user to infected
     await deviceRepository.update({ name: req.body.deviceName }, { isInfected: 1 });

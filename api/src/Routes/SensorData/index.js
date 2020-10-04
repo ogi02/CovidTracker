@@ -20,6 +20,7 @@ const getSensorData = async (req, res) => {
 	}
 
 	console.log('sensor-data');
+	console.log(req.body.deviceName);
 
 	// Send request to ml
 	const request = await fetch(ml_url, {

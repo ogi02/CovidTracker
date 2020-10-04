@@ -12,6 +12,7 @@ const reportContact = async (req, res) => {
 	d2 = await deviceRepository.findOne({ name: req.body.deviceName2 });
 
 	console.log('report-contact');
+	console.log(req.body.deviceName);
 
 	if (d1 && d2) {
 
