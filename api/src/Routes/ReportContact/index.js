@@ -11,6 +11,8 @@ const reportContact = async (req, res) => {
 	d1 = await deviceRepository.findOne({ name: req.body.deviceName1 });
 	d2 = await deviceRepository.findOne({ name: req.body.deviceName2 });
 
+	console.log('report-contact');
+
 	if (d1 && d2) {
 
 		// Check if names are the same
