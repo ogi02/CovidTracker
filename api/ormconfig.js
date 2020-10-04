@@ -10,5 +10,4 @@ module.exports = {
     autoSchemaSync: true,
     schema: process.env.DB_SCHEMA,
     entities: ['src/Entity/*.js'],
-    logging: true
 };

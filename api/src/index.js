@@ -10,6 +10,7 @@ createConnection().then(() => {
 	const contact = require('./Routes/Contact');
 	const report = require('./Routes/Report');
 	const checkForContact = require('./Routes/CheckForContact');
+	const sensorData = require('./Routes/SensorData');
 
 	app.use('/', express.json());
 
@@ -23,6 +24,7 @@ createConnection().then(() => {
 	app.post('/report-contact', contact.contact);
 	app.post('/report-infectedness', report.report);
 	app.post('/check-for-contact', checkForContact.checkForContact);
+	app.post('/sensor-data', sensorData.getSensorData);
 
 	app.listen(3000);
 
