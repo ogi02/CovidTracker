@@ -18,6 +18,12 @@ module.exports = new EntitySchema({
         },
         lastKnownTransport2: {
             type: 'varchar'
+        },
+        longitude: {
+            type: 'float'
+        },
+        latitude: {
+            type: 'float'
         }
     },
     relations: {
