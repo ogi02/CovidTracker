@@ -98,7 +98,7 @@ public class SearchForNearbyDevicesService extends Service {
     private boolean isCurrentDeviceObligedToReportForContact(String contactedDevice) {
         return BluetoothUtils.currentDeviceName != null
                 && contactedDevice != null
-                && contactedDevice.compareTo(BluetoothUtils.currentDeviceName) < 0;
+                && contactedDevice.compareTo(BluetoothUtils.currentDeviceName) > 0;
     }
 
     @Override
