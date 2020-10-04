@@ -25,7 +25,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +58,7 @@ public class SearchForNearbyDevicesService extends Service {
             }
             if (isSingleContactExpired(existingContact)) {
                 existingContacts.remove(contactedDevice);
-            }else{
+            } else {
                 existingContact.setLastContactTime(LocalDateTime.now());
             }
             return;
