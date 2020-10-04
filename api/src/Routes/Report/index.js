@@ -7,7 +7,7 @@ const deviceRepository = getRepository(Device);
 const contactRepository = getRepository(Contact);
 const pendingNotificationRepository = getRepository(PendingNotification);
 
-const report = async (req, res) => {
+const reportInfectedness = async (req, res) => {
     const device = await deviceRepository.findOne({ name: req.body.deviceName });
     if (!device) {
         res.status(422).json();
@@ -48,4 +48,4 @@ const report = async (req, res) => {
     res.status(204).json();
 };
 
-exports.report = report;
+exports.reportInfectedness = reportInfectedness;

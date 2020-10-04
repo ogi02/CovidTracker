@@ -5,7 +5,7 @@ const Contact = require('../../Model/Contact').Contact;
 const deviceRepository = getRepository(Device);
 const contactRepository = getRepository(Contact);
 
-const contact = async (req, res) => {
+const reportContact = async (req, res) => {
 
 	d1 = await deviceRepository.findOne({ name: req.body.deviceName1 });
 	d2 = await deviceRepository.findOne({ name: req.body.deviceName2 });
@@ -32,4 +32,4 @@ const contact = async (req, res) => {
 
 }
 
-exports.contact = contact
+exports.reportContact = reportContact
