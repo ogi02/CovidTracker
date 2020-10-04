@@ -2,6 +2,7 @@ package cc.holdinga.covidtracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -11,11 +12,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private double latitude;
+    private double longitude;
+    private String pinTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        Intent intent = getIntent();
+        latitude = intent.getDoubleExtra("lat", 1);
+        longitude = intent.getDoubleExtra("long", 1);
+        pinTitle = intent.getStringExtra("text");
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         if (mapFragment == null) {
@@ -26,10 +35,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLng contact = new LatLng(42.662683, 23.373346);
+        LatLng contact = new LatLng(latitude, longitude);
         googleMap.addMarker(new MarkerOptions()
                 .position(contact)
-                .title("You were contacted here.")
+                .title(pinTitle)
         );
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(contact));
         googleMap.animateCamera(CameraUpdateFactory.zoomIn());

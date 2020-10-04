@@ -81,7 +81,10 @@ public class CheckForContactService extends Service {
 
 
     private void pushNotificationForContact(String notificationContent) {
-        Intent resultIntent = new Intent(this, MapActivity.class);
+        Intent resultIntent = new Intent(this, MapActivity.class)
+                .putExtra("lat", 42.662683)
+                .putExtra("long", 23.373346)
+                .putExtra("text", notificationContent);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
