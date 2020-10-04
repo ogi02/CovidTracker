@@ -3,7 +3,7 @@ const Device = require('../../Model/Device').Device;
 
 const deviceRepository = getRepository(Device);
 
-const register = async (req, res) => {
+const registerDevice = async (req, res) => {
 
 	d = new Device(req.body.deviceName);
 
@@ -28,4 +28,4 @@ const register = async (req, res) => {
 
 }
 
-exports.register = register;
+exports.registerDevice = registerDevice;

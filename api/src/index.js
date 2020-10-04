@@ -7,8 +7,8 @@ createConnection().then(() => {
 	module.exports = app;
 
 	const registerDevice = require('./Routes/RegisterDevice');
-	const contact = require('./Routes/Contact');
-	const report = require('./Routes/Report');
+	const reportContact = require('./Routes/Contact');
+	const reportInfectedness = require('./Routes/Report');
 	const checkForContact = require('./Routes/CheckForContact');
 
 	app.use('/', express.json());
@@ -19,9 +19,9 @@ createConnection().then(() => {
 		next();
 	});
 
-	app.post('/register-device', registerDevice.register);
-	app.post('/report-contact', contact.contact);
-	app.post('/report-infectedness', report.report);
+	app.post('/register-device', registerDevice.registerDevice);
+	app.post('/report-contact', reportContact.reportContact);
+	app.post('/report-infectedness', reportInfectedness.reportInfectedness);
 	app.post('/check-for-contact', checkForContact.checkForContact);
 
 	app.listen(3000);
