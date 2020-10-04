@@ -72,7 +72,7 @@ public class SearchForNearbyDevicesService extends Service {
     }
 
     private long getMinutesAfterContact(SingleContact contact) {
-        return Math.abs(Duration.between(LocalDateTime.now(), contact.getContactTime()).toMinutes());
+        return Math.abs(Duration.between(LocalDateTime.now(), contact.getContactTime()).toMillis());
     }
 
     private void reportContact(String contactedDevice) {
