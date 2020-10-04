@@ -74,7 +74,9 @@ const reportInfectedness = async (req, res) => {
         contacted: obj.id,
         lastKnownTransport1: obj.lastKnownTransport1,
         lastKnownTransport2: obj.lastKnownTransport2,
-        timestamp: obj.timestamp
+        timestamp: obj.timestamp,
+        longitude: obj.longitude,
+        latitude: obj.latitude
     }));
 
     // Insert the notification
