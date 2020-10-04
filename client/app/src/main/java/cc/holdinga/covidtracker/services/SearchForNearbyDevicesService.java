@@ -112,7 +112,7 @@ public class SearchForNearbyDevicesService extends Service {
                 .setSmallIcon(R.drawable.ic_contact)
                 .setContentIntent(pendingIntent)
                 .build();
-        startForeground(3, notification);
+        startForeground(Constants.SEARCHING_DEVICES_NOTIFICATION_ID, notification);
         new Thread(this::searchForNearbyDevices).start();
         return START_STICKY;
     }
