@@ -1,4 +1,3 @@
-from json import loads
 from typing import Tuple
 
 import pandas as pd
@@ -67,7 +66,7 @@ def split_dataset(df: pd.DataFrame) -> Tuple[ndarray, ndarray, ndarray]:
     return (n_df[:end_train], n_df[end_train:end_test], n_df[end_test:])
 
 
-def parse_json(json: str) -> dict:
+def parse_json(json: dict) -> dict:
     ''' Parse JSON
 
     un-nest JSON from request to be used for predicting
@@ -81,8 +80,6 @@ def parse_json(json: str) -> dict:
      - parameters(unordered) : dict
 
     '''
-    json = loads(json)  # parse from string to dict
-
     parsed = {}
 
     for key in json:
@@ -109,15 +106,16 @@ def order_params(params: dict) -> ndarray:
     '''
     order_params = [
         'accelerometer', 'game_rotation_vector', 'gyroscope',
-        'gyroscope_uncalibrated', 'linear_acceleration', 'rotation_vector'
+        'gyroscope_uncalibrated', 'linear_acceleration', 'orientation',
+        'rotation_vector', 'sound'
     ]  # missing orientation and sound
 
     order_types = ['mean', 'min', 'max', 'std']
 
-    params = np.array([])
+    parsed_params = []
     ''' template for params is PARAM_NAME#TYPE'''
     for param in order_params:
         for value in order_types:
-            params.append(parsed_params[param + '#' + value])
+            parsed_params.append(params[param + '#' + value])
 
-    return params
+    return array(parsed_params)
