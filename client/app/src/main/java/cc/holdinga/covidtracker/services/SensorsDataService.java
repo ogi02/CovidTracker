@@ -149,8 +149,7 @@ public class SensorsDataService extends Service {
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         try {
             mediaRecorder.prepare();
-            Thread.sleep(1000);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         mediaRecorder.start();
@@ -161,7 +160,7 @@ public class SensorsDataService extends Service {
             try {
                 Thread.sleep(delay);
                 runnable.run();
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }).start();
