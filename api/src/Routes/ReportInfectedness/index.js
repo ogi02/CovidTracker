@@ -30,12 +30,12 @@ const reportInfectedness = async (req, res) => {
     let contactedIds = [];
     contacts.forEach( c => {
         if (!contactedIds.includes(c.device1.id)) {
-            if (c.device1.name !== device.name) {
+            if (c.device1.name !== device.name && !c.device1.isInfected) {
                 contactedIds.push(c.device1.id);
             }        
         }
         if (!contactedIds.includes(c.device2.id)) {
-            if (c.device2.name !== device.name) {
+            if (c.device2.name !== device.name && !c.device2.isInfected) {
                 contactedIds.push(c.device2.id);
             }
         }
@@ -44,7 +44,6 @@ const reportInfectedness = async (req, res) => {
     //Add contacted users to pending notifications
     let pendingNotifications = [];
     contactedIds.forEach( id => pendingNotifications.push({ infected: device.id, contacted: id }));
-
     //Insert the notification
     const currentPendingNotifications = await pendingNotificationRepository.find({ infected: device.id });
     if (currentPendingNotifications.length === 0) {

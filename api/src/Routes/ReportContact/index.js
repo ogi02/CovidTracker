@@ -25,7 +25,9 @@ const reportContact = async (req, res) => {
 		await contactRepository.insert({
 			device1: c.device1Id,
 			device2: c.device2Id,
-			timestamp: c.timestamp
+			timestamp: c.timestamp,
+			lastKnownTransport1: d1.lastKnownTransport,
+			lastKnownTransport2: d2.lastKnownTransport
 		});
 
 		res.status(201).json();

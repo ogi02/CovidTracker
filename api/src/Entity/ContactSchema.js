@@ -12,6 +12,12 @@ module.exports = new EntitySchema({
         },
         timestamp: {
             type: 'timestamp'
+        },
+        lastKnownTransport1: {
+            type: 'varchar'
+        },
+        lastKnownTransport2: {
+            type: 'varchar'
         }
     },
     relations: {

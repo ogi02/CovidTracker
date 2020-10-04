@@ -16,9 +16,9 @@ const checkForContact = async (req, res) => {
     }
 
     //Return if contacted and remove notification pending
-    const isContacted = await pendingNotificationRepository.findOne({ infected: device });
+    const isContacted = await pendingNotificationRepository.findOne({ contacted: device });
     if (isContacted) {
-        await pendingNotificationRepository.delete({ infected: device });
+        await pendingNotificationRepository.delete({ contacted: device });
         res.status(200).json({isContacted: true});
     } else {
         res.status(200).json({isContacted: false});
