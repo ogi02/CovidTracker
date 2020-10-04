@@ -6,23 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/hello"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAlert"
-        android:id="@+id/alertButton"
-        android:text="I'm sick!"
-        android:layout_centerInParent="true"
-        android:textColor="@color/colorWhite"
-        ></Button>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAlert"
+            android:id="@+id/reportInfectedness"
+            android:text="Report Infectedness"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorWhite"
+            android:padding="20px"
+    ></Button>
 
 </RelativeLayout>

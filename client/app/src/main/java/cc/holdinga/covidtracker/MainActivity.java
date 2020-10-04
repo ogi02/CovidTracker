@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         registerDevice();
 
-        Button alertButton = findViewById(R.id.alertButton);
+        Button alertButton = findViewById(R.id.reportInfectedness);
         alertButton.setOnClickListener(view -> reportInfectedness());
     }
 
