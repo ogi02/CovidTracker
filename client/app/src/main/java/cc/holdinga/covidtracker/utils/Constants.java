@@ -11,12 +11,12 @@ public class Constants {
     public static final int SEARCHING_DEVICES_NOTIFICATION_ID = 2;
     public static final int SENSORS_DATA_NOTIFICATION_ID = 3;
 
-    public static final long CHECK_FOR_CONTACT_INTERVAL = (getOneMinuteInMilliseconds() * 10) / 50;
-    public static final long IS_SINGLE_CONTACT_FOR_REPORT_INTERVAL = getOneMinuteInMilliseconds() / 60;
+    public static final long CHECK_FOR_CONTACT_INTERVAL = (getOneMinuteInMilliseconds() * 10) / 5;
+    public static final long IS_SINGLE_CONTACT_FOR_REPORT_INTERVAL = getOneMinuteInMilliseconds() / 6;
     public static final long IS_SINGLE_CONTACT_EXPIRED_INTERVAL = getOneMinuteInMilliseconds() * 3;
 
     public static final int COLLECTING_SENSORS_DATA_INTERVAL = 5000;
-    public static final long INTERVAL_BETWEEN_COLLECTING_SENSORS_DATA = getOneMinuteInMilliseconds() / 10;
+    public static final long INTERVAL_BETWEEN_COLLECTING_SENSORS_DATA = getOneMinuteInMilliseconds() / 2;
 
     private static long getOneMinuteInMilliseconds() {
         return  1000 * 60;

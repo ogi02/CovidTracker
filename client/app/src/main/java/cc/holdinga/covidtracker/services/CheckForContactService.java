@@ -1,6 +1,7 @@
 package cc.holdinga.covidtracker.services;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -8,6 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.TaskStackBuilder;
+
+import cc.holdinga.covidtracker.MapActivity;
 import cc.holdinga.covidtracker.R;
 import cc.holdinga.covidtracker.models.CheckForContactResponse;
 import cc.holdinga.covidtracker.models.DeviceProperties;
@@ -77,6 +81,10 @@ public class CheckForContactService extends Service {
 
 
     private void pushNotificationForContact(String notificationContent) {
+        Intent resultIntent = new Intent(this, MapActivity.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         Notification notification = new NotificationCompat
                 .Builder(CheckForContactService.this, Constants.CHECK_FOR_CONTACT_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_contact)
@@ -84,6 +92,8 @@ public class CheckForContactService extends Service {
                 .setContentText(notificationContent)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(notificationContent))
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
                 .build();
         NotificationManagerCompat.from(CheckForContactService.this).notify(
                 Constants.ON_CONTACT_NOTIFICATION_ID,
