@@ -72,7 +72,7 @@ public class CheckForContactService extends Service {
 
     private void pushNotificationForContact() {
         Notification notification = new NotificationCompat
-                .Builder(CheckForContactService.this, Constants.CHECK_FOR_CONTACT_ID)
+                .Builder(CheckForContactService.this, Constants.CHECK_FOR_CONTACT_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_contact)
                 .setContentTitle("Warning")
                 .setContentText("You were in contact with an infected person")

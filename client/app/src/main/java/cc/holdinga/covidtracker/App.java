@@ -26,17 +26,17 @@ public class App extends Application {
     private void createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel checkForContactServiceNotificationChannel = new NotificationChannel(
-                    Constants.CHECK_FOR_CONTACT_ID,
+                    Constants.CHECK_FOR_CONTACT_NOTIFICATION_CHANNEL_ID,
                     "Check For Contact Service Notification Channel",
                     NotificationManager.IMPORTANCE_LOW
             );
             NotificationChannel sensorsDataServiceNotificationChannel = new NotificationChannel(
-                    Constants.SENSOR_DATA_ID,
+                    Constants.SENSOR_DATA__NOTIFICATION_CHANNEL_ID,
                     "Sensor Data Service Notification Channel",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
             NotificationChannel searchingForNearbyDevicesServiceNotificationChannel = new NotificationChannel(
-                    Constants.SEARCHING_FOR_NEARBY_DEVICES_ID,
+                    Constants.SEARCHING_FOR_NEARBY_DEVICES_NOTIFICATION_CHANNEL_ID,
                     "Searching For Nearby Devices Service Channel",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
