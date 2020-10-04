@@ -9,6 +9,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.IBinder;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -35,6 +37,9 @@ public class SearchForNearbyDevicesService extends Service {
     private final OkHttpClient httpClient = new OkHttpClient();
 
     private final Map<String, SingleContact> existingContacts = new HashMap<>();
+
+    private double latitude = 0;
+    private double longitude = 0;
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -80,9 +85,13 @@ public class SearchForNearbyDevicesService extends Service {
     }
 
     private Request buildReportContactRequest(String contactedDevice) {
-
-        String json = JsonParser.stringify(new ContactForReporting(BluetoothUtils.currentDeviceName, contactedDevice));
-
+        ContactForReporting contactForReporting = new ContactForReporting(
+                BluetoothUtils.currentDeviceName,
+                contactedDevice,
+                latitude,
+                longitude
+        );
+        String json = JsonParser.stringify(contactForReporting);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
         return new Request.Builder()
                 .url(Constants.API_URL + "/report-contact")
@@ -97,7 +106,28 @@ public class SearchForNearbyDevicesService extends Service {
     private boolean isCurrentDeviceObligedToReportForContact(String contactedDevice) {
         return BluetoothUtils.currentDeviceName != null
                 && contactedDevice != null
-                && contactedDevice.compareTo(BluetoothUtils.currentDeviceName) > 0;
+                && contactedDevice.compareTo(BluetoothUtils.currentDeviceName) < 0;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        try {
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    0,
+                    0,
+                    this::locationChangeHandler);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void locationChangeHandler(Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
     }
 
     @Override
