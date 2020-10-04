@@ -8,6 +8,7 @@ const ml_url = 'http://gorchilov.net:5000/';
 
 const getSensorData = async (req, res) => {
 
+	// Get device name and device from database
 	const deviceName = req.body.deviceName;
 
 	const device = await deviceRepository.findOne({ name: deviceName });
@@ -17,8 +18,10 @@ const getSensorData = async (req, res) => {
 		return;
 	}
 
+	// Remove device name from request body
 	delete req.body.deviceName;
 
+	// Send request to ml
 	const request = await fetch(ml_url, {
 		method: 'POST',
 		headers: {
@@ -28,10 +31,10 @@ const getSensorData = async (req, res) => {
 		body: JSON.stringify(req.body)
 	});
 
+	// Wait for response from ml
 	const response = await request.json();
 
-	console.log(response.transport);
-
+	// Update database
 	await deviceRepository.update({ name: deviceName }, { lastKnownTransport: response.transport });
 
 	res.status(200).json();

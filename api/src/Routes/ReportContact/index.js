@@ -7,16 +7,19 @@ const contactRepository = getRepository(Contact);
 
 const reportContact = async (req, res) => {
 
+	// Get both devices and check if they exist
 	d1 = await deviceRepository.findOne({ name: req.body.deviceName1 });
 	d2 = await deviceRepository.findOne({ name: req.body.deviceName2 });
 
 	if (d1 && d2) {
 
+		// Check if names are the same
 		if (d1.name === d2.name) {
 			res.status(422).json();
 			return;
 		}
 
+		// Create contact and insert it into database
 		c = new Contact(d1.id, d2.id);
 
 		await contactRepository.insert({
@@ -26,6 +29,7 @@ const reportContact = async (req, res) => {
 		});
 
 		res.status(201).json();
+		
 	} else {
 		res.status(404).json();
 	}
