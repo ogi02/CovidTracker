@@ -9,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.app.TaskStackBuilder;
-
 import cc.holdinga.covidtracker.MapActivity;
 import cc.holdinga.covidtracker.R;
 import cc.holdinga.covidtracker.models.CheckForContactResponse;
