@@ -201,7 +201,7 @@ public class SensorsDataService extends Service {
     private SensorData processMediaRecorderRawData() {
         List<Double> filteredData = mediaRecorderRawData.stream()
                 .filter(value -> value != 0)
-                .map(value -> (double) value)
+                .map(value -> (double) value / 1000)
                 .collect(Collectors.toList());
         return processSensorRawData(filteredData);
     }
