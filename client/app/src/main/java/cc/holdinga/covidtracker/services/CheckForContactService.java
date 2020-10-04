@@ -56,7 +56,12 @@ public class CheckForContactService extends Service {
             }
 
             if (checkForContactResponse.getIsContacted()) {
-                pushNotificationForContact();
+                String notificationContent = "You may have been in contact with a COVID-19 infected person while being " + checkForContactResponse.getTransport1();
+                if(!checkForContactResponse.getTransport1().equals(checkForContactResponse.getTransport2())){
+                    notificationContent += " or " + checkForContactResponse.getTransport2();
+                }
+                notificationContent += " on " + checkForContactResponse.getTimestamp();
+                pushNotificationForContact(notificationContent);
             }
         }
     };
@@ -70,12 +75,15 @@ public class CheckForContactService extends Service {
                 .build();
     }
 
-    private void pushNotificationForContact() {
+
+    private void pushNotificationForContact(String notificationContent) {
         Notification notification = new NotificationCompat
                 .Builder(CheckForContactService.this, Constants.CHECK_FOR_CONTACT_NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_contact)
                 .setContentTitle("Warning")
-                .setContentText("You were in contact with an infected person")
+                .setContentText(notificationContent)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(notificationContent))
                 .build();
         NotificationManagerCompat.from(CheckForContactService.this).notify(
                 Constants.ON_CONTACT_NOTIFICATION_ID,
