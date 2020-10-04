@@ -5,6 +5,7 @@ const deviceRepository = getRepository(Device);
 
 const registerDevice = async (req, res) => {
 
+	// Create device from device name
 	d = new Device(req.body.deviceName);
 
 	if(!d.name) {
@@ -12,9 +13,11 @@ const registerDevice = async (req, res) => {
 		return;
 	}
 
-	const user = await deviceRepository.findOne({ name: d.name });
+	// Get device and check if it exists
+	const device = await deviceRepository.findOne({ name: d.name });
 
-	if(!user) {
+	if(!device) {
+		// Insert device into database
 		await deviceRepository.insert({
 			name: d.name,
 			isInfected: d.isInfected

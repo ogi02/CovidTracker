@@ -2,13 +2,15 @@ const { createConnection } = require('typeorm');
 
 createConnection().then(() => {
 
+	// Include express
 	const express = require('express');
 	const app = express();
 	module.exports = app;
 
+	// Get function for routes
 	const registerDevice = require('./Routes/RegisterDevice');
-	const reportContact = require('./Routes/Contact');
-	const reportInfectedness = require('./Routes/Report');
+	const reportContact = require('./Routes/ReportContact');
+	const reportInfectedness = require('./Routes/ReportInfectedness');
 	const checkForContact = require('./Routes/CheckForContact');
 	const sensorData = require('./Routes/SensorData');
 
@@ -20,12 +22,13 @@ createConnection().then(() => {
 		next();
 	});
 
+	// Set post request handlers
 	app.post('/register-device', registerDevice.registerDevice);
 	app.post('/report-contact', reportContact.reportContact);
 	app.post('/report-infectedness', reportInfectedness.reportInfectedness);
 	app.post('/check-for-contact', checkForContact.checkForContact);
 	app.post('/sensor-data', sensorData.getSensorData);
 
-	app.listen(3000);
+	app.listen(process.env.SERVER_PORT);
 
 }).catch(err => console.log(err));
