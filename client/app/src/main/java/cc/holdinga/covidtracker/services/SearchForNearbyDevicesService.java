@@ -59,21 +59,21 @@ public class SearchForNearbyDevicesService extends Service {
             }
             if (isSingleContactExpired(existingContact)) {
                 existingContacts.remove(contactedDevice);
+            }else{
+                existingContact.setLastContactTime(LocalDateTime.now());
             }
             return;
         }
         if (isCurrentDeviceObligedToReportForContact(contactedDevice)) {
-            existingContacts.put(contactedDevice, new SingleContact(contactedDevice, LocalDateTime.now()));
+            existingContacts.put(contactedDevice,
+                    new SingleContact(contactedDevice, LocalDateTime.now(), LocalDateTime.now()));
         }
     }
 
     private boolean isSingleContactForReport(SingleContact existingContact) {
-        return getMinutesAfterContact(existingContact) >= Constants.IS_SINGLE_CONTACT_FOR_REPORT_INTERVAL;
+        return existingContact.getMillisecondsAfterInitialContact() >= Constants.IS_SINGLE_CONTACT_FOR_REPORT_INTERVAL;
     }
 
-    private long getMinutesAfterContact(SingleContact contact) {
-        return Math.abs(Duration.between(LocalDateTime.now(), contact.getContactTime()).toMillis());
-    }
 
     private void reportContact(String contactedDevice) {
         Request request = buildReportContactRequest(contactedDevice);
@@ -86,13 +86,13 @@ public class SearchForNearbyDevicesService extends Service {
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), json);
         return new Request.Builder()
-                .url("http://192.168.200.132:3000/report-contact")
+                .url(Constants.API_URL + "/report-contact")
                 .post(requestBody)
                 .build();
     }
 
     private boolean isSingleContactExpired(SingleContact existingContact) {
-        return getMinutesAfterContact(existingContact) >= Constants.IS_SINGLE_CONTACT_EXPIRED_INTERVAL;
+        return existingContact.getMillisecondsAfterLastContact() >= Constants.IS_SINGLE_CONTACT_EXPIRED_INTERVAL;
     }
 
     private boolean isCurrentDeviceObligedToReportForContact(String contactedDevice) {
