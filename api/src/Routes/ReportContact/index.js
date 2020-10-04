@@ -29,7 +29,9 @@ const reportContact = async (req, res) => {
 			device2: c.device2Id,
 			timestamp: c.timestamp,
 			lastKnownTransport1: d1.lastKnownTransport,
-			lastKnownTransport2: d2.lastKnownTransport
+			lastKnownTransport2: d2.lastKnownTransport,
+			longitude: req.body.longitude,
+			latitude: req.body.latitude
 		});
 
 		res.status(201).json();

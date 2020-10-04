@@ -41,7 +41,9 @@ const reportInfectedness = async (req, res) => {
                     id: c.device1.id,
                     lastKnownTransport1: c.lastKnownTransport1,
                     lastKnownTransport2: c.lastKnownTransport2,
-                    timestamp: date + time
+                    timestamp: date + time,
+                    longitude: c.longitude,
+                    latitude: c.latitude
                 });
             }
         }
@@ -55,7 +57,9 @@ const reportInfectedness = async (req, res) => {
                     id: c.device2.id,
                     lastKnownTransport1: c.lastKnownTransport1,
                     lastKnownTransport2: c.lastKnownTransport2,
-                    timestamp: date + time
+                    timestamp: date + time,
+                    longitude: c.longitude,
+                    latitude: c.latitude
                 });
             }
         }
