@@ -5,6 +5,8 @@ public class CheckForContactResponse {
     private String transport2;
     private String transport1;
     private String timestamp;
+    private double longitude;
+    private double latitude;
 
     public String getTransport1() {
         return transport1;
@@ -16,6 +18,14 @@ public class CheckForContactResponse {
 
     public String getTimestamp() {
         return timestamp;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public boolean getIsContacted() {
