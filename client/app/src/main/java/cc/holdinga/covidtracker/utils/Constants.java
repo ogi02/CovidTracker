@@ -1,7 +1,7 @@
 package cc.holdinga.covidtracker.utils;
 
 public class Constants {
-    public static final String API_URL = "http://192.168.200.132:3000";
+    public static final String API_URL = "http://192.168.200.145:3000";
 
     public static final String CHECK_FOR_CONTACT_NOTIFICATION_CHANNEL_ID = "checkForContact";
     public static final String SEARCHING_FOR_NEARBY_DEVICES_NOTIFICATION_CHANNEL_ID = "searchingForNearbyDevices";

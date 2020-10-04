@@ -18,7 +18,7 @@ public class App extends Application {
 
         createNotificationChannels();
 
-        startService(new Intent(getBaseContext(), SensorsDataService.class));
+//        startService(new Intent(getBaseContext(), SensorsDataService.class));
         startService(new Intent(getBaseContext(), CheckForContactService.class));
         startService(new Intent(getBaseContext(), SearchForNearbyDevicesService.class));
     }
