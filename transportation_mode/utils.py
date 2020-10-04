@@ -38,7 +38,7 @@ def decode_output(num: int) -> str:
      - type : str
 
     '''
-    modes = ['Still', 'Walking', 'Car', 'Bus', 'Train']
+    modes = ['still', 'on a walk', 'in a car', 'on a bus', 'on a train']
 
     return modes[num]
 
