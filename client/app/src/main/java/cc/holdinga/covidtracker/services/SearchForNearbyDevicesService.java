@@ -98,7 +98,7 @@ public class SearchForNearbyDevicesService extends Service {
     private boolean isCurrentDeviceObligedToReportForContact(String contactedDevice) {
         return BluetoothUtils.currentDeviceName != null
                 && contactedDevice != null
-                && contactedDevice.compareTo(BluetoothUtils.currentDeviceName) < 0;
+                && contactedDevice.compareTo(BluetoothUtils.currentDeviceName) > 0;
     }
 
     @Override
@@ -112,7 +112,7 @@ public class SearchForNearbyDevicesService extends Service {
                 .setSmallIcon(R.drawable.ic_contact)
                 .setContentIntent(pendingIntent)
                 .build();
-        startForeground(3, notification);
+        startForeground(Constants.SEARCHING_DEVICES_NOTIFICATION_ID, notification);
         new Thread(this::searchForNearbyDevices).start();
         return START_STICKY;
     }

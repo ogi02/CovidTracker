@@ -8,6 +8,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -35,13 +36,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLng contact = new LatLng(latitude, longitude);
+        LatLng contactLocation = new LatLng(latitude, longitude);
         googleMap.addMarker(new MarkerOptions()
-                .position(contact)
+                .position(contactLocation)
                 .title(pinTitle)
         );
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(contact));
-        googleMap.animateCamera(CameraUpdateFactory.zoomIn());
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(contactLocation)
+                .zoom(17).build();
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 }

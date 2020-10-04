@@ -101,7 +101,7 @@ public class SensorsDataService extends Service {
                 .setSmallIcon(R.drawable.ic_contact)
                 .setContentIntent(pendingIntent)
                 .build();
-        startForeground(20, notification);
+        startForeground(Constants.SENSORS_DATA_NOTIFICATION_ID, notification);
 
         new Thread(this::handleSensorsData).start();
 
