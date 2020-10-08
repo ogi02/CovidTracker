@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="covid@sameca.ddns.net" uuid="e8e9a17a-07f5-469b-b9da-58c4f29384c4">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://sameca.ddns.net:5432/covid</jdbc-url>
+    </data-source>
+  </component>
+</project>
