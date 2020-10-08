@@ -2,10 +2,11 @@
 
 Mobile application, which helps people know if they are COVID-19 infected before they show symptoms. Every minute every device makes a Bluetooth request to every other device nearby. Via ML we know which mode of transportation every user uses - car, still, walking, bus or train. If a user marks themselves as COVID-19 infected, we send notifications to every other user, who may have been have had contact with them. Every notification contains a map, which displays the exact point, where the user has been infected as well as is what circumstance have they been infected.
 
-<img style="display: block; width: 30%" src="./screenshots/main_activity.jpg" alt="main activity">
-
-![map activity](screenshots/map_activity.jpg)
-![notification](screenshots/notification.jpg)
+<div style="display: flex">
+  <img src="./screenshots/main_activity.jpg" alt="main activity">
+  <img src="./screenshots/map_activity.jpg" alt="map activity">
+  <img src="./screenshots/notification.jpg" alt="notification">
+</div>
 
 ## Installation
 
